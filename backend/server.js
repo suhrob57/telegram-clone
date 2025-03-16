@@ -11,7 +11,7 @@ const io = socketIo(server);
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://teslakanal001:<db_password>@cluster0.g9gq2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect('mongodb+srv://teslakanal001:<suhrob3131>@cluster0.g9gq2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
