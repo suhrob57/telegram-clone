@@ -1,0 +1,5 @@
+name: telegram-clone-backend
+build:
+  commands:
+    - npm install
+    - npm run build
