@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -6,15 +7,22 @@ const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://teslakanal001:<suhrob3131>@cluster0.g9gq2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+// MongoDB ulanishi
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+}).then(() => console.log("MongoDB connected"))
+  .catch(err => console.log("MongoDB connection error:", err));
 
 const MessageSchema = new mongoose.Schema({
   user: String,
@@ -24,6 +32,7 @@ const MessageSchema = new mongoose.Schema({
 
 const Message = mongoose.model('Message', MessageSchema);
 
+// Socket.io eventlar
 io.on('connection', (socket) => {
   console.log('New client connected');
 
@@ -38,9 +47,12 @@ io.on('connection', (socket) => {
   });
 });
 
+// API endpoint
 app.get('/api/messages', async (req, res) => {
   const messages = await Message.find().sort({ timestamp: -1 });
   res.json(messages);
 });
 
-server.listen(5000, () => console.log('Server running on port 5000'));
+// PORT uchun `process.env.PORT` dan foydalanamiz
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
